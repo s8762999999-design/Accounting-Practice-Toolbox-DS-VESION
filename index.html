@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>科技業會計｜實務工具箱</title>
+    <!-- Font Awesome 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', '微軟正黑體', 'Microsoft JhengHei', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ---------- 左側導航 ---------- */
+        .sidebar {
+            width: 280px;
+            background: #0b2b4a;
+            color: #e0f0ff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.2s;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px 16px;
+            border-bottom: 1px solid #2a4b6a;
+        }
+
+        .sidebar-header h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: 0.5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-header h2 i {
+            color: #7ab7ef;
+        }
+
+        .sidebar-header .sub {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 6px;
+            color: #b6d4f0;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 12px;
+            color: #cfdef5;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s;
+            list-style: none;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .nav-item:hover {
+            background: #1e405e;
+            color: white;
+        }
+
+        .nav-item.active {
+            background: #2e6a9e;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,20,40,0.2);
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: #2a4b6a;
+            margin: 16px 12px;
+        }
+
+        .nav-section-title {
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8eb3d0;
+        }
+
+        /* ---------- 右側主內容 ---------- */
+        .main-content {
+            flex: 1;
+            padding: 24px 32px 40px;
+            overflow-y: auto;
+            background: #f4f7fc;
+        }
+
+        .content-pane {
+            display: none;
+            animation: fade 0.2s ease;
+        }
+
+        .content-pane.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        /* 卡片設計 */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.03);
+            border: 1px solid #e9ecf2;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #0b2b4a;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #1e3b5a;
+            margin-bottom: 16px;
+            border-left: 5px solid #2e6a9e;
+            padding-left: 20px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #244c6b;
+            margin: 20px 0 12px 0;
+        }
+
+        h4 {
+            font-weight: 600;
+            color: #1e3b5a;
+            margin: 16px 0 8px;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            background: #e2ecf9;
+            color: #0b2b4a;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: #e2ecf9;
+            color: #0b2b4a;
+            font-weight: 600;
+            padding: 12px 14px;
+            text-align: left;
+            border-radius: 12px 12px 0 0;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #dde3ed;
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .highlight {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            border-left: 4px solid #2e6a9e;
+            margin: 18px 0;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .tool-chip {
+            background: #f0f4fa;
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 6px 8px 6px 0;
+            font-size: 0.9rem;
+            border: 1px solid #cddae8;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px dashed #cbd6e4;
+        }
+
+        .checklist-item i {
+            color: #2e6a9e;
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #cddae8;
+            text-align: right;
+            color: #4a668a;
+            font-size: 0.9rem;
+        }
+
+        .quick-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 24px;
+            flex: 1 1 160px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.02);
+            border: 1px solid #e2e9f2;
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: #2e6a9e;
+            margin-bottom: 8px;
+        }
+
+        /* 響應式 */
+        @media (max-width: 800px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: none;
+            }
+            .nav-menu {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 8px;
+            }
+            .nav-item {
+                flex: 1 0 40%;
+                padding: 10px;
+            }
+            .main-content {
+                padding: 16px;
+            }
+        }
+        @media (max-width: 480px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 左側導航 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-calculator"></i> 會計實務箱</h2>
+            <div class="sub">科技業專用 · 快速索引</div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-section-title">總覽</div>
+            <div class="nav-item active" data-pane="home">
+                <i class="fas fa-home"></i> 首頁總覽
+            </div>
+            <div class="nav-item" data-pane="terms">
+                <i class="fas fa-book-open"></i> 常用名詞庫
+            </div>
+            <div class="nav-item" data-pane="tools">
+                <i class="fas fa-toolbox"></i> 軟體工具清單
+            </div>
+            <div class="nav-item" data-pane="checklist">
+                <i class="fas fa-check-double"></i> 檢核表
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-section-title">六大實務模組</div>
+            <div class="nav-item" data-pane="revenue">
+                <i class="fas fa-chart-line"></i> 收入認列 (SaaS/ASC606)
+            </div>
+            <div class="nav-item" data-pane="rd">
+                <i class="fas fa-flask"></i> 研發支出資本化
+            </div>
+            <div class="nav-item" data-pane="compensation">
+                <i class="fas fa-users"></i> 員工獎酬
+            </div>
+            <div class="nav-item" data-pane="tax">
+                <i class="fas fa-file-invoice-dollar"></i> 稅務優惠
+            </div>
+            <div class="nav-item" data-pane="projectcost">
+                <i class="fas fa-diagram-project"></i> 專案成本與內控
+            </div>
+            <div class="nav-item" data-pane="transferpricing">
+                <i class="fas fa-globe"></i> 跨境移轉訂價
+            </div>
+            <div class="nav-divider"></div>
+            <div class="nav-item" data-pane="summary">
+                <i class="fas fa-table"></i> 匯總速查表
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容區塊 -->
+    <div class="main-content">
+        <!-- 首頁總覽 -->
+        <div id="home" class="content-pane active">
+            <div class="card">
+                <h1><i class="fas fa-microchip" style="margin-right: 12px; color:#2e6a9e;"></i>科技業會計 · 實務工具箱</h1>
+                <p style="font-size:1.1rem; margin-bottom: 20px; color:#2c405c;">專為科技產業會計人員設計——涵蓋收入、研發、獎酬、稅務、成本與跨境議題，搭配名詞、工具與檢核單，快速查找應用。</p>
+                <div class="quick-stats">
+                    <div class="stat-card"><i class="fas fa-file-signature"></i><br><strong>6 大模組</strong><br><span style="color:#4d6a8f;">實務深度解析</span></div>
+                    <div class="stat-card"><i class="fas fa-database"></i><br><strong>30+ 名詞</strong><br><span style="color:#4d6a8f;">雙語對照</span></div>
+                    <div class="stat-card"><i class="fas fa-laptop"></i><br><strong>15+ 工具</strong><br><span style="color:#4d6a8f;">軟體與平台</span></div>
+                    <div class="stat-card"><i class="fas fa-clipboard-list"></i><br><strong>檢核清單</strong><br><span style="color:#4d6a8f;">內控/稅務/財報</span></div>
+                </div>
+                <p><i class="fas fa-arrow-left" style="margin-right: 8px; color:#2e6a9e;"></i>請由左側選單點選主題，內容即時顯示。</p>
+            </div>
+            <div class="card">
+                <h3>📌 快速入口</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <span class="tool-chip" style="cursor:pointer;" onclick="document.querySelector('[data-pane=revenue]').click()">📊 收入認列五步驟</span>
+                    <span class="tool-chip" style="cursor:pointer;" onclick="document.querySelector('[data-pane=rd]').click()">🧪 研發資本化條件</span>
+                    <span class="tool-chip" style="cursor:pointer;" onclick="document.querySelector('[data-pane=tax]').click()">💰 產創條例抵減</span>
+                    <span class="tool-chip" style="cursor:pointer;" onclick="document.querySelector('[data-pane=checklist]').click()">✅ 月結檢核表</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 常用名詞庫 -->
+        <div id="terms" class="content-pane">
+            <div class="card">
+                <h2>📖 常用會計名詞 (科技業重點)</h2>
+                <table>
+                    <tr><th>中文</th><th>英文</th><th>簡要說明</th></tr>
+                    <tr><td>遞延收入</td><td>Deferred Revenue</td><td>已收款但尚未滿足履約義務，為負債科目</td></tr>
+                    <tr><td>合約負債</td><td>Contract Liability</td><td>IFRS 15下，因已收對價而須移轉商品/服務之義務</td></tr>
+                    <tr><td>履約義務</td><td>Performance Obligation</td><td>合約中承諾移轉給客戶之可區分商品或服務</td></tr>
+                    <tr><td>單獨售價</td><td>Standalone Selling Price (SSP)</td><td>分攤交易價格之基礎</td></tr>
+                    <tr><td>研究階段</td><td>Research Phase</td><td>支出全部費用化</td></tr>
+                    <tr><td>開發階段</td><td>Development Phase</td><td>符合條件可資本化</td></tr>
+                    <tr><td>股份基礎給付</td><td>Share-based Payment</td><td>員工認股權、限制型股票等</td></tr>
+                    <tr><td>員工認股選擇權</td><td>Employee Stock Option</td><td>公平價值通常採Black-Scholes模型</td></tr>
+                    <tr><td>研發投資抵減</td><td>R&D Tax Credit</td><td>產創條例第10條，15%或10%三年</td></tr>
+                    <tr><td>移轉訂價</td><td>Transfer Pricing</td><td>關係人交易須符合常規</td></tr>
+                    <tr><td>權責發生制</td><td>Accrual Basis</td><td>交易發生時認列，非現金收付時</td></tr>
+                    <tr><td>折舊</td><td>Depreciation</td><td>有形資產成本分攤</td></tr>
+                    <tr><td>攤銷</td><td>Amortization</td><td>無形資產成本分攤</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 軟體工具清單 -->
+        <div id="tools" class="content-pane">
+            <div class="card">
+                <h2>🛠️ 會計常用軟體與平台</h2>
+                <div class="grid-2col">
+                    <div>
+                        <h4>📁 ERP / 會計系統</h4>
+                        <ul style="list-style-type: none; padding-left:0;">
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> 用友 (Yonyou) · 好會計</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> 金蝶 (Kingdee) · 精斗雲</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> SAP S/4HANA / Oracle NetSuite</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> QuickBooks / Xero (跨境適用)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>📊 分析與自動化</h4>
+                        <ul style="list-style-type: none;">
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> Power BI / Tableau</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> RPA (UiPath, 欣大RPA)</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> JCAATs AI 稽核軟體</li>
+                            <li><i class="fas fa-check-circle" style="color:#2e6a9e;"></i> 飛書多維表格 / Trello</li>
+                        </ul>
+                    </div>
+                </div>
+                <h4>📌 營收認列專用工具</h4>
+                <p>Zuora, Ordway, Maxio (SaaSOptics), Sage Intacct 等，支援 ASC606/IFRS15 排程與分攤。</p>
+            </div>
+        </div>
+
+        <!-- 檢核表 -->
+        <div id="checklist" class="content-pane">
+            <div class="card">
+                <h2>✅ 會計日常檢核清單</h2>
+                <div class="checklist-item"><i class="far fa-square"></i> 收入：合約資產/遞延收入與帳齡核對，確認履約進度</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 研發：工時紀錄是否依階段拆分 (研究/開發)</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 股份基礎給付：既得條件追蹤與費用分攤計算</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 稅務：研發投抵申請文件、設備投資抵減證明</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 專案成本：專案損益表、預算vs實際差異</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 移轉訂價：關係人交易彙總、利潤率指標監控</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 月結：銀行調節表、應收應付帳齡、折舊攤銷</div>
+                <div class="checklist-item"><i class="far fa-square"></i> 內控：費用報銷分級審批、電子發票驗真</div>
+                <p style="margin-top:16px;"><i class="fas fa-print"></i> 可列印或於系統標記完成狀態。</p>
+            </div>
+        </div>
+
+        <!-- 收入認列模組 -->
+        <div id="revenue" class="content-pane">
+            <div class="card">
+                <h2>📈 SaaS／軟體收入認列 (ASC606 / IFRS15)</h2>
+                <div class="highlight">
+                    <strong>📌 Bookings ≠ Billings ≠ Revenue</strong> — 開票與認列收入時間差產生「遞延收入」。
+                </div>
+                <h3>五步驟模型</h3>
+                <ol style="margin-left:20px; line-height:1.8;">
+                    <li>辨認合約 (MSA+Order Form)</li>
+                    <li>辨認履約義務 (平台使用權、導入服務、支援)</li>
+                    <li>決定交易價格 (含變動對價)</li>
+                    <li>分攤交易價格 (依SSP)</li>
+                    <li>滿足義務時認列 (通常隨時間按比例)</li>
+                </ol>
+                <h4>⚠️ 實務高難度場景</h4>
+                <ul>
+                    <li>合約修改 (升級/降級) —— 重新計算剩餘履約義務</li>
+                    <li>捆綁合約拆分 —— 導入費可能與平台合併或單獨認列</li>
+                    <li>用量計費 —— 需預估並持續更新收入</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 研發支出 -->
+        <div id="rd" class="content-pane">
+            <div class="card">
+                <h2>🧬 研發支出：費用化 vs 資本化</h2>
+                <p><strong>IFRS (IAS 38)</strong>：研究階段全數費用化；開發階段符合條件強制資本化。</p>
+                <h4>資本化五條件 (台灣/IFRS)</h4>
+                <ol style="margin-left:20px;">
+                    <li>技術可行性</li><li>意圖完成並使用或出售</li><li>有能力使用或出售</li>
+                    <li>未來經濟效益 (市場/內部使用)</li><li>支出能可靠衡量</li>
+                </ol>
+                <p><strong>實務建議</strong>：採用「技術里程碑法」，以原型測試通過、認證取得等作為資本化起點。使用 JIRA/禪道 拆分工時。</p>
+            </div>
+        </div>
+
+        <!-- 員工獎酬 -->
+        <div id="compensation" class="content-pane">
+            <div class="card">
+                <h2>🧑‍💼 員工獎酬與股份基礎給付</h2>
+                <p>台灣自2008年起員工分紅費用化，依公允價值衡量。</p>
+                <ul>
+                    <li><strong>認股選擇權</strong>：Black-Scholes模型，於既得期間攤銷費用。</li>
+                    <li><strong>限制型股票</strong>：依既得條件分年認列。</li>
+                    <li><strong>現金結算</strong>：負債按公允價值重新衡量。</li>
+                </ul>
+                <div class="highlight">💡 建立獎酬追蹤表 (授予日、既得期間、離職影響)</div>
+            </div>
+        </div>
+
+        <!-- 稅務優惠 -->
+        <div id="tax" class="content-pane">
+            <div class="card">
+                <h2>💰 科技業租稅優惠 (產創條例)</h2>
+                <table>
+                    <tr><th>優惠項目</th><th>抵減方式</th></tr>
+                    <tr><td>研發支出投資抵減</td><td>15%抵當年或10%分三年，上限30%應納稅額</td></tr>
+                    <tr><td>智慧機械/AI/節能減碳</td><td>支出上限20億，抵減率5%或3% (三年內)</td></tr>
+                    <tr><td>中小企業增僱/加薪</td><td>增僱24歲以下/65歲以上薪資200%減除；加薪175%減除</td></tr>
+                </table>
+                <p><i class="fas fa-pen"></i> 申請時程：應於結算申報前取得主管機關核准。</p>
+            </div>
+        </div>
+
+        <!-- 專案成本與內控 -->
+        <div id="projectcost" class="content-pane">
+            <div class="card">
+                <h2>📋 專案成本核算 & 內部控制</h2>
+                <p>「科目＋項目」雙維度記帳，ERP專案模組追蹤預算vs實際。</p>
+                <h4>費用內控要點</h4>
+                <ul>
+                    <li>事前申請與預算控制</li>
+                    <li>分級審批流程 (依金額/類型)</li>
+                    <li>電子發票驗真、自動報帳</li>
+                    <li>研發專案管理台帳 (立項/驗收紀錄)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 跨境移轉訂價 -->
+        <div id="transferpricing" class="content-pane">
+            <div class="card">
+                <h2>🌐 跨境交易與移轉訂價</h2>
+                <p><strong>台灣門檻</strong>：營收≧30億且跨境交易≧15億 → 集團主檔；最終母公司合併營收≧270億 → 國別報告。</p>
+                <h4>高風險警示</h4>
+                <ul><li>長期低利潤關係人交易</li><li>無形資產授權 (專利、軟體)</li><li>集團服務費分攤</li></ul>
+                <p>無論是否達標，均應備妥移轉訂價報告或替代文據。</p>
+            </div>
+        </div>
+
+        <!-- 匯總速查表 -->
+        <div id="summary" class="content-pane">
+            <div class="card">
+                <h2>📑 科技業會計人員速查表</h2>
+                <table>
+                    <tr><th>模組</th><th>核心關注點</th><th>關鍵工具/參考</th></tr>
+                    <tr><td>收入認列</td><td>五步驟、遞延收入、合約修改</td><td>ASC606/IFRS15 合規清單</td></tr>
+                    <tr><td>研發支出</td><td>研究/開發區分、資本化五條件</td><td>專案管理軟體、研發台帳</td></tr>
+                    <tr><td>員工獎酬</td><td>股份基礎給付、既得條件</td><td>Black-Scholes、獎酬追蹤表</td></tr>
+                    <tr><td>稅務優惠</td><td>研發抵減、設備投資抵減</td><td>產創條例申請文件</td></tr>
+                    <tr><td>專案成本</td><td>雙維度記帳、預算差異</td><td>ERP專案會計、工時系統</td></tr>
+                    <tr><td>費用內控</td><td>事前預算、分級審批</td><td>數位報帳SOP</td></tr>
+                    <tr><td>移轉訂價</td><td>關係人交易文據</td><td>TP報告/替代文據</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- 頁尾署名 -->
+        <div class="footer-note">
+            <i class="fas fa-flask"></i> 營養師 李亮頡 研究開發 for 泡泡 2026/04/13
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            // 導航切換功能
+            const navItems = document.querySelectorAll('.nav-item');
+            const panes = {
+                home: document.getElementById('home'),
+                terms: document.getElementById('terms'),
+                tools: document.getElementById('tools'),
+                checklist: document.getElementById('checklist'),
+                revenue: document.getElementById('revenue'),
+                rd: document.getElementById('rd'),
+                compensation: document.getElementById('compensation'),
+                tax: document.getElementById('tax'),
+                projectcost: document.getElementById('projectcost'),
+                transferpricing: document.getElementById('transferpricing'),
+                summary: document.getElementById('summary')
+            };
+
+            function switchPane(targetId) {
+                // 隱藏所有 pane
+                Object.values(panes).forEach(p => p.classList.remove('active'));
+                // 顯示目標 pane
+                if (panes[targetId]) panes[targetId].classList.add('active');
+                // 更新導航 active 樣式
+                navItems.forEach(item => {
+                    const pane = item.dataset.pane;
+                    if (pane === targetId) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+                // 滾動到頂部
+                document.querySelector('.main-content').scrollTop = 0;
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const paneId = this.dataset.pane;
+                    if (paneId) {
+                        switchPane(paneId);
+                    }
+                });
+            });
+
+            // 如果有 hash 或初始 active 已正確，首頁為 home
+            // 處理可能從外部點擊
+            window.switchPane = switchPane;
+        })();
+    </script>
+    <!-- 確保點擊 tool-chip 可切換 (簡單綁定) -->
+    <script>
+        document.querySelectorAll('[data-pane]').forEach(el => {
+            if (!el.classList.contains('nav-item')) {
+                el.addEventListener('click', function() {
+                    const pane = this.dataset.pane;
+                    if (pane) {
+                        document.querySelector(`.nav-item[data-pane="${pane}"]`).click();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
